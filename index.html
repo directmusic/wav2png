@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="p5.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200;300;400;500&display=swap');
+
+        :root {
+            --bg: rgb(0, 0, 0);
+            --bg-accent: rgb(43, 48, 55);
+            --text: rgb(255, 255, 255);
+            --color: rgb(172, 192, 222);
+            --color-transparent: rgba(172, 192, 222, 40);
+            --accent: rgb(86, 96, 111);
+            --accent-transparent: rgba(86, 96, 111, 40);
+            --btn-active: rgba(0, 0, 0, 0);
+        }
+
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Source Code Pro', monospace;
+        }
+
+        a {
+            color: var(--color);
+            text-decoration: none;
+            border-bottom: 0.1em solid var(--color);
+        }
+
+        a:hover {
+            color: var(--color);
+            text-decoration: none;
+            border-bottom: 0.1em solid var(--color);
+        }
+
+        button {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 1em;
+            ;
+            color: var(--text);
+            background: var(--accent-transparent);
+            border: none;
+            padding: 1em;
+            ;
+        }
+
+        button:hover {
+            background: var(--color-transparent);
+        }
+
+        button:active {
+            background: var(--btn-active);
+        }
+
+        #imageContainer {
+            padding: 1em;
+            margin: 1em;
+            background: var(--bg-accent);
+            width: fit-content;
+        }
+
+        #imageContainer #titleText {
+            color: var(--color);
+            margin-bottom: 0.5em;
+        }
+
+        #imageContainer canvas {
+            width: 40vw;
+        }
+
+        #imageContainer #buttons {
+            margin-top: 0.5em;
+        }
+
+        #dropOverlay {
+            background: var(--accent);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vw;
+            display: none;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body id="dropHandler">
+
+    <button onclick="load(); play()">fuck</button>
+
+    <canvas width="3000" height="500" id="imgRenderingCanvasLeft" hidden></canvas>
+    <canvas width="3000" height="500" id="imgRenderingCanvasRight" hidden></canvas>
+
+    <!-- <button onclick="downloadChannel('right', 'right', rightChannelCanvas)">download right</button> -->
+    <div id="imageContainer">
+        <div id="titleText">Resulting Image:</div>
+        <canvas width="3000" height="500" id="audioDisplay"></canvas>
+        <div id="buttons">
+            <button onclick="downloadChannel('left', 'left', leftChannelCanvas)">Download Image</button>
+        </div>
+    </div>
+
+    <div id="dropOverlay">
+        <h1>Drop file here</h1>
+    </div>
+
+
+    <script>
+
+        dropHandler.ondragover = dropHandler.ondragenter = function (evt) {
+            evt.preventDefault();
+            dropOverlay.style.display = "block";
+            evt.dataTransfer.dropEffect = 'copy';
+
+        };
+        dropHandler.ondragleave = function (evt) {
+            evt.preventDefault();
+            dropOverlay.style.display = "none";
+        }
+        var reader = new FileReader();
+        reader.onload = function () {
+            // Should look like data:,<jibberish_data> based on which method you called
+            console.log(e.target.result);
+        };
+        dropHandler.ondrop = function (evt) {
+            // pretty simple -- but not for IE :(
+            let file = evt.dataTransfer.files[0];
+            let reader = new FileReader();
+            if (file.type.match('image/png')) {
+                console.log("png");
+                reader.onload = function (e2) {
+                    // Start PNG Process
+                }
+            } else if (file.type.match('audio/wav')) {
+                console.log("wav");
+                reader.onload = function (e2) {
+                    // Start WAV Process
+                    load(e2.target.result);
+                }
+            } else {
+                console.error("FILE FORMAT INVALID");
+            }
+            reader.readAsArrayBuffer(file);
+            dropOverlay.style.display = "none";
+
+            evt.preventDefault();
+        };
+        function clamp(num, min, max) {
+            return num <= min ? min : num >= max ? max : num;
+        }
+        let leftChannelCanvas = document.getElementById("imgRenderingCanvasLeft");
+        var leftCtx = leftChannelCanvas.getContext("2d");
+
+
+        var c = document.getElementById("audioDisplay");
+        var ctx = c.getContext("2d");
+        const audioCtx = new AudioContext();
+        let buffer = null;
+        let leftChannelAudio = new Array();
+
+        const load = (undecodedAudio) => {
+            audioCtx.decodeAudioData(undecodedAudio, function (data) {
+                // success
+                buffer = data;
+                let leftChannelPixels = new Array();
+                let bufL = buffer.getChannelData(0);
+                for (let i = 0; i < buffer.length; i++) {
+                    leftChannelPixels.push(((clamp(bufL[i], -1, 1) + 1) * 0.5) * 768); // 
+                    leftChannelAudio.push(bufL[i]);
+                }
+                buildImage(leftChannelPixels, 3000, ctx);
+                buildImage(leftChannelPixels, 3000, leftCtx);
+            }, function() {
+                // error
+                console.error("COULDN'T CONVERT AUDIO TO IMAGE. CORRECT FORMAT?");
+            });
+        }
+        
+        let link = document.createElement("a");
+        function buildImage(audioArray, stride, context) {
+            let imgHeight = audioArray.length / stride;
+            let imageData = context.createImageData(stride, imgHeight);
+            let index = 0;
+            for (let y = 0; y < imgHeight; y++) {
+                for (let x = 0; x < stride; x++) {
+                    imageData.data[4 * stride * y + 4 * x + 0] = clamp(audioArray[index], 0, 255);
+                    imageData.data[4 * stride * y + 4 * x + 1] = clamp(audioArray[index] - 256, 0, 255);
+                    imageData.data[4 * stride * y + 4 * x + 2] = clamp(audioArray[index] - 512, 0, 255);
+                    imageData.data[4 * stride * y + 4 * x + 3] = 255
+                    index++;
+                }
+            }
+            // resize canvas
+            // the main canvas should just be a display
+            context.canvas.width = stride;
+            context.canvas.height = imgHeight;
+            context.putImageData(imageData, 0, 0);
+        }
+        function downloadChannel(filename, channel, currentCanvas) {
+            link.download = filename + "_" + channel + ".png";
+            currentCanvas.toBlob(function (blob) {
+                link.href = URL.createObjectURL(blob);
+                link.click();
+            }, "image/png");
+        }
+
+        var rate = 44100;
+        function floatTo16BitPCM(output, offset, input) {
+            for (let i = 0; i < input.length; i++, offset += 2) {
+                let s = Math.max(-1, Math.min(1, input[i]));
+                output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+            }
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+        function encodeWAV(samples) {
+            let buffer = new ArrayBuffer(44 + samples.length * 2);
+            let view = new DataView(buffer);
+            let numChannels = 1;
+            let sampleRate = 44100;
+            /* RIFF identifier */
+            writeString(view, 0, 'RIFF');
+            /* RIFF chunk length */
+            view.setUint32(4, 36 + samples.length * 2, true);
+            /* RIFF type */
+            writeString(view, 8, 'WAVE');
+            /* format chunk identifier */
+            writeString(view, 12, 'fmt ');
+            /* format chunk length */
+            view.setUint32(16, 16, true);
+            /* sample format (raw) */
+            view.setUint16(20, 1, true);
+            /* channel count */
+            view.setUint16(22, numChannels, true);
+            /* sample rate */
+            view.setUint32(24, sampleRate, true);
+            /* byte rate (sample rate * block align) */
+            view.setUint32(28, sampleRate * 4, true);
+            /* block align (channel count * bytes per sample) */
+            view.setUint16(32, numChannels * 2, true);
+            /* bits per sample */
+            view.setUint16(34, 16, true);
+            /* data chunk identifier */
+            writeString(view, 36, 'data');
+            /* data chunk length */
+            view.setUint32(40, samples.length * 2, true);
+
+            floatTo16BitPCM(view, 44, samples);
+
+            return view;
+        }
+        function exportWAV(type, floatAudioBuffer, audioLength) {
+            var channel = 0;
+            var i = 0, offset = 0, newbuffers = [];
+
+            newbuffers[channel] = new Float32Array(audioLength);
+            newbuffers[channel].set(floatAudioBuffer);
+
+            var interleaved = newbuffers[0];
+
+            var dataview = encodeWAV(floatAudioBuffer, rate);
+            var audioBlob = new Blob([dataview], { type: type });
+            var link = document.createElement("a"); // Or maybe get it from the current document
+            link.href = URL.createObjectURL(audioBlob);
+            link.download = "wave.wav";
+            link.innerHTML = "Click here to download the file";
+            document.body.appendChild(link);
+            this.postMessage(audioBlob);
+        }
+
+        function loadImg() {
+            var img = new Image();
+            img.src = "img.png";
+            console.log(img);
+            ctx.canvas.width = img.width;
+            ctx.canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            let imageData = ctx.getImageData(0, 0, img.width, img.height).data;
+            let newImageData = Array();
+            for (let i = 0; i < imageData.length; i += 4) {
+                newImageData.push((((imageData[i] + imageData[i + 1] + imageData[i + 2]) / 768) - 0.5) * 2);
+            }
+            exportWAV("audio/wav", newImageData, newImageData.length);
+        }
+        //loadImg();
+    </script>
+</body>
+
+</html>
