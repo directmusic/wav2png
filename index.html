@@ -15,9 +15,9 @@
             --bg-accent: rgb(43, 48, 55);
             --text: rgb(255, 255, 255);
             --color: rgb(172, 192, 222);
-            --color-transparent: rgba(172, 192, 222, 40);
+            --color-transparent: rgba(172, 192, 222, 0.15);
             --accent: rgb(86, 96, 111);
-            --accent-transparent: rgba(86, 96, 111, 40);
+            --accent-transparent: rgba(86, 96, 111, 0.5);
             --btn-active: rgba(0, 0, 0, 0);
         }
 
@@ -38,23 +38,25 @@
             color: var(--color);
             text-decoration: none;
             border-bottom: 0.1em solid var(--color);
+            cursor: pointer;
+
         }
 
         a:hover {
             color: var(--color);
             text-decoration: none;
             border-bottom: 0.1em solid var(--color);
+            cursor: pointer;
+
         }
 
         button {
             font-family: 'Source Code Pro', monospace;
             font-size: 1em;
-            ;
             color: var(--text);
             background: var(--accent-transparent);
             border: none;
             padding: 1em;
-            ;
         }
 
         button:hover {
@@ -65,131 +67,367 @@
             background: var(--btn-active);
         }
 
-        #imageContainer {
+        #title {
+            background-color: var(--bg-accent);
             padding: 1em;
-            margin: 1em;
+            margin: 1rem 1rem 0 1rem;
+            font-size: 1.5em;
+        }
+
+        #title #subtext {
+            font-size: 0.75em;
+            opacity: 0.5;
+        }
+
+        #title #madewithlove {
+            font-size: 0.75em;
+            opacity: 0.9;
+            text-align: right;
+            display: inline;
+            background: var(--accent-transparent);
+            padding: 1em;
+            ;
+        }
+
+        #mainContainer {
+            display: grid;
+            padding: 1em;
+            grid-gap: 1em;
+
+            width: calc(100vw - 3em);
+            grid-template-columns: 50% 50%;
+            grid-template-areas:
+                "image audio";
+        }
+
+        #imageContainer {
+            grid-area: "image";
+            padding: 1em;
             background: var(--bg-accent);
-            width: fit-content;
+            transition: 0.5s background-color;
+        }
+
+        #imageContainer #bgText {
+            position: relative;
+        }
+
+        #imageContainer #canvasDiv {
+            display: inline-block;
+        }
+
+        #imageContainer #canvasDiv #bgText:after {
+            content: "Drag .wav here to convert to .png";
+            position: absolute;
+            width: calc(100% - 3em);
+            height: calc(17em - 3em);
+            border: var(--color) dashed 0.5em;
+            text-align: center;
+            padding: 13em 1em 1em 1em;
+            vertical-align: middle;
         }
 
         #imageContainer #titleText {
             color: var(--color);
             margin-bottom: 0.5em;
+            font-size: 1.25em;
         }
 
         #imageContainer canvas {
-            width: 40vw;
+            height: 30em;
+            width: 100%;
+            z-index: 10;
+            position: relative;
+
         }
 
         #imageContainer #buttons {
             margin-top: 0.5em;
+            /* z-index:  1; */
         }
 
-        #dropOverlay {
-            background: var(--accent);
+        #audioContainer {
+            grid-area: "audio";
+            padding: 1em;
+            background: var(--bg-accent);
+            transition: 0.5s background-color;
+        }
+
+        #audioContainer #bgText {
+            position: relative;
+        }
+
+        #audioContainer #canvasDiv {
+            display: inline-block;
+        }
+
+        #audioContainer #canvasDiv #bgText:after {
+            content: "Drag .png here to convert to .wav";
+            position: absolute;
+            width: calc(100% - 3em);
+            height: calc(17em - 3em);
+            border: var(--color) dashed 0.5em;
+            text-align: center;
+            padding: 13em 1em 1em 1em;
+            vertical-align: middle;
+        }
+
+
+
+        #audioContainer #titleText {
+            color: var(--color);
+            margin-bottom: 0.5em;
+            font-size: 1.25em;
+        }
+
+        #audioContainer canvas {
+            height: 30em;
+            width: 100%;
+            z-index: 10;
+            position: relative;
+        }
+
+        #audioContainer #buttons {
+            margin-top: 0.5em;
+        }
+
+        #loading {
+            background: var(--accent-transparent);
             position: fixed;
+            line-height: 100vh;
+            text-align: center;
+            font-size: 3em;
             top: 0;
             left: 0;
             width: 100vw;
-            height: 100vw;
-            display: none;
+            height: 100vh;
+            opacity: 0;
+            transition: 0.5s opacity;
             pointer-events: none;
+            backdrop-filter: blur(10px);
+
+            /* display: none; */
+        }
+        #notchrome {
+            background: var(--accent-transparent);
+            position: fixed;
+            text-align: center;
+            font-size: 3em;
+            padding-top: 50vh;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        #faq {
+            max-width: 50em;
+            padding: 2em;
+        }
+
+        h2 {
+            padding: 1em 0 0.5em 0;
+        }
+
+        #faq p {
+            text-indent: 1em;
+            margin-left: 1em;
+        }
+
+        #changelog {
+            max-width: 50em;
+            padding: 2em;
+            opacity: 0.75;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 20em;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+            padding: 1em;
+            position: absolute;
+            z-index: 10;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
         }
     </style>
 </head>
 
-<body id="dropHandler">
-
-    <button onclick="load(); play()">fuck</button>
-
+<body>
+    <div id="title"><span>wav2png</span> <span id="subtext">&back</span> <span id="madewithlove">made with ❤️ by <a
+                href="https://twitter.com/directofficial">@directofficial</a> | <a href="https://ko-fi.com/directmusic">
+                buy me a coffee</a> | <a href="https://www.paypal.com/paypalme/directmusic"> donate on paypal</a></span>
+    </div>
     <canvas width="3000" height="500" id="imgRenderingCanvasLeft" hidden></canvas>
-    <canvas width="3000" height="500" id="imgRenderingCanvasRight" hidden></canvas>
+    <div id="mainContainer">
+        <div id="imageContainer">
+            <div id="imgDropHandler">
 
-    <!-- <button onclick="downloadChannel('right', 'right', rightChannelCanvas)">download right</button> -->
-    <div id="imageContainer">
-        <div id="titleText">Resulting Image:</div>
-        <canvas width="3000" height="500" id="audioDisplay"></canvas>
-        <div id="buttons">
-            <button onclick="downloadChannel('left', 'left', leftChannelCanvas)">Download Image</button>
+                <div id="titleText">
+                    wav > png:
+                    <div class="tooltip">ⓘ <span class="tooltiptext">Drag a .wav file here to convert it to a PNG.
+                            <br><br>
+                            This takes the left channel, assigns color values based off each sample. Download the PNG
+                            file and open it in an image editor. Then drag it back to this page.</span>
+                    </div>
+                </div>
+                <div id="canvasDiv">
+                    <div id="bgText"></div>
+                    <canvas width="3000" height="500" id="audioDisplay"></canvas>
+                </div>
+                <div id="buttons">
+                    <button onclick="downloadChannel('left', 'left', leftChannelCanvas)">Download .png file</button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="audioContainer">
+            <div id="audioDropHandler">
+                <div id="titleText">
+                    png > wav:
+                    <div class="tooltip">ⓘ <span class="tooltiptext">Drag a .png file here to convert it to a .wav audio
+                            file. <br><br>
+                            This essentially converts the image back to audio. You can drag any image into here but it
+                            may sound like trash or be extremely loud so be careful and turn down your speakers.</span>
+                    </div>
+                </div>
+                <div id="canvasDiv">
+                    <div id="bgText"></div>
+                    <canvas width="3000" height="500" id="pngDisplay"></canvas>
+                </div>
+                <div id="buttons">
+                    <button onclick="downloadAudio();">Download .wav file</button>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div id="dropOverlay">
-        <h1>Drop file here</h1>
+    <div id="loading">
+        Loading...
     </div>
-
-
+    <div id="notchrome">
+        wav2png only works in Chromium-based browsers.<br>
+        <span style="font-size: 0.5em">if you think you're experiencing a glitch let me know on twitter @directofficial</span>
+    </div>
+    <div id="faq">
+        <h2>what is this?</h2>
+        <p>wav2png is a way to convert audio files to png to allow for the use of various photo filters on audio. this
+            page also allows you to convert back to audio for use in your songs and projects.</p>
+        <h2>what image filters work best?</h2>
+        <p>i love playing with photoshop's blur filters like field blur and radial blur!</p>
+        <h2>you're going to steal my song huh?</h2>
+        <p>no way. i can't afford the bandwidth to do the conversion on a server so the whole conversion process is don
+            within your browser. don't believe me? download the page and use it with your wifi off.</p>
+        <h2>oh cool thanks</h2>
+        <p>no problem. if you use this in a tune i'd love to know about it. hit me up on twitter <a
+                href="https://twitter.com/directofficial">(@directofficial)</a>. or if you feel generous buy me a coffee
+            or donate on paypal :)</p>
+    </div>
+    <div id="changelog">
+        <h2>changelog</h2>
+        <p>initial release - 04/27/2021</p>
+    </div>
     <script>
-
-        dropHandler.ondragover = dropHandler.ondragenter = function (evt) {
-            evt.preventDefault();
-            dropOverlay.style.display = "block";
-            evt.dataTransfer.dropEffect = 'copy';
-
-        };
-        dropHandler.ondragleave = function (evt) {
-            evt.preventDefault();
-            dropOverlay.style.display = "none";
+        if(!window.chrome){
+            notchrome.style.display = "block";
         }
-        var reader = new FileReader();
-        reader.onload = function () {
-            // Should look like data:,<jibberish_data> based on which method you called
-            console.log(e.target.result);
-        };
-        dropHandler.ondrop = function (evt) {
-            // pretty simple -- but not for IE :(
-            let file = evt.dataTransfer.files[0];
-            let reader = new FileReader();
-            if (file.type.match('image/png')) {
-                console.log("png");
-                reader.onload = function (e2) {
-                    // Start PNG Process
-                }
-            } else if (file.type.match('audio/wav')) {
-                console.log("wav");
-                reader.onload = function (e2) {
-                    // Start WAV Process
-                    load(e2.target.result);
-                }
-            } else {
-                console.error("FILE FORMAT INVALID");
-            }
-            reader.readAsArrayBuffer(file);
-            dropOverlay.style.display = "none";
-
+        audioContainer.ondragover = audioContainer.ondragenter = function (evt) {
             evt.preventDefault();
+            audioContainer.style.backgroundColor = "var(--accent)";
+        }
+        audioContainer.ondragleave = function (evt) {
+            evt.preventDefault();
+            audioContainer.style.backgroundColor = "var(--bg-accent)";
+        }
+
+        imgDropHandler.ondragover = imgDropHandler.ondragenter = function (evt) {
+            evt.preventDefault();
+            imageContainer.style.backgroundColor = "var(--accent)";
         };
+        imgDropHandler.ondragleave = function (evt) {
+            evt.preventDefault();
+            imageContainer.style.backgroundColor = "var(--bg-accent)";
+        }
+        // HANDLE FILE DROP
+        imgDropHandler.ondrop =
+            audioContainer.ondrop = function (evt) {
+                //restore colors
+                audioContainer.style.backgroundColor = "var(--bg-accent)";
+                imageContainer.style.backgroundColor = "var(--bg-accent)";
+                loading.style.opacity = "1";
+                evt.preventDefault();
+
+                // pretty simple -- but not for IE :(
+                let file = evt.dataTransfer.files[0];
+                let reader = new FileReader();
+                if (file.type.match('image/png')) {
+                    reader.readAsDataURL(file);
+                    reader.onload = function (e2) {
+                        // Start PNG Process
+                        img2audio(e2.target.result);
+                    }
+                } else if (file.type.match('audio/wav')) {
+                    reader.readAsArrayBuffer(file);
+                    reader.onload = function (e2) {
+                        // Start WAV Process
+                        audio2img(e2.target.result);
+                    }
+                } else {
+                    console.error("FILE FORMAT INVALID");
+                }
+
+            };
         function clamp(num, min, max) {
             return num <= min ? min : num >= max ? max : num;
         }
         let leftChannelCanvas = document.getElementById("imgRenderingCanvasLeft");
         var leftCtx = leftChannelCanvas.getContext("2d");
 
+        var audioCanvas = document.getElementById("audioDisplay");
+        var ctx = audioCanvas.getContext("2d");
 
-        var c = document.getElementById("audioDisplay");
-        var ctx = c.getContext("2d");
+
+        var pngCanvas = document.getElementById("pngDisplay");
+        var pngContext = pngCanvas.getContext("2d");
+
         const audioCtx = new AudioContext();
         let buffer = null;
         let leftChannelAudio = new Array();
 
-        const load = (undecodedAudio) => {
+        const audio2img = (undecodedAudio) => {
             audioCtx.decodeAudioData(undecodedAudio, function (data) {
                 // success
                 buffer = data;
                 let leftChannelPixels = new Array();
                 let bufL = buffer.getChannelData(0);
+                // let buf = (buffer.getChannelData(0) + buffer.getChannelData(1))/ 2; 
                 for (let i = 0; i < buffer.length; i++) {
                     leftChannelPixels.push(((clamp(bufL[i], -1, 1) + 1) * 0.5) * 768); // 
                     leftChannelAudio.push(bufL[i]);
                 }
                 buildImage(leftChannelPixels, 3000, ctx);
                 buildImage(leftChannelPixels, 3000, leftCtx);
-            }, function() {
+                loading.style.opacity = "0";
+            }, function () {
                 // error
                 console.error("COULDN'T CONVERT AUDIO TO IMAGE. CORRECT FORMAT?");
             });
         }
-        
+
         let link = document.createElement("a");
         function buildImage(audioArray, stride, context) {
             let imgHeight = audioArray.length / stride;
@@ -267,6 +505,9 @@
 
             return view;
         }
+
+        // AUDIO
+        let currentAudioBlob = null;
         function exportWAV(type, floatAudioBuffer, audioLength) {
             var channel = 0;
             var i = 0, offset = 0, newbuffers = [];
@@ -278,29 +519,32 @@
 
             var dataview = encodeWAV(floatAudioBuffer, rate);
             var audioBlob = new Blob([dataview], { type: type });
-            var link = document.createElement("a"); // Or maybe get it from the current document
-            link.href = URL.createObjectURL(audioBlob);
-            link.download = "wave.wav";
-            link.innerHTML = "Click here to download the file";
-            document.body.appendChild(link);
+            currentAudioBlob = audioBlob;
             this.postMessage(audioBlob);
         }
 
-        function loadImg() {
-            var img = new Image();
-            img.src = "img.png";
-            console.log(img);
-            ctx.canvas.width = img.width;
-            ctx.canvas.height = img.height;
-            ctx.drawImage(img, 0, 0);
-            let imageData = ctx.getImageData(0, 0, img.width, img.height).data;
-            let newImageData = Array();
-            for (let i = 0; i < imageData.length; i += 4) {
-                newImageData.push((((imageData[i] + imageData[i + 1] + imageData[i + 2]) / 768) - 0.5) * 2);
-            }
-            exportWAV("audio/wav", newImageData, newImageData.length);
+        function downloadAudio() {
+            link.download = "audio.wav";
+            link.href = URL.createObjectURL(currentAudioBlob);
+            link.click();
         }
-        //loadImg();
+        const img2audio = (imgBlob) => {
+            var img = new Image();
+            img.src = imgBlob;
+            img.onload = function () {
+                console.log(img.width);
+                pngContext.canvas.width = img.width;
+                pngContext.canvas.height = img.height;
+                pngContext.drawImage(img, 0, 0);
+                let imageData = pngContext.getImageData(0, 0, img.width, img.height).data;
+                let newImageData = Array();
+                for (let i = 0; i < imageData.length; i += 4) {
+                    newImageData.push((((imageData[i] + imageData[i + 1] + imageData[i + 2]) / 768) - 0.5) * 2);
+                }
+                loading.style.opacity = "0";
+                exportWAV("audio/wav", newImageData, newImageData.length);
+            };
+        }
     </script>
 </body>
 
