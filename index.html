@@ -5,8 +5,20 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="p5.min.js"></script>
+    <title>wav2png - audio to image converter</title>
+    <meta name="keywords"
+        content="wav2png, audio2image, audio, image, converter, photoshop filters, datamoshing, joseph lyncheski, directmusic">
+    <!-- FACEBOOK -->
+    <meta property="og:title" content="wav2png - audio to image converter">
+    <meta property="og:site_name" content="wav2png - audio to image converter">
+    <meta property="og:url" content="https://directmusic.me/wav2png">
+    <meta property="og:description" content="convert audio to images for datamoshing audio fun.">
+    <!--<meta property="og:image" content="http://static.tumblr.com/b2cbxhu/X2Nofa3eh/directpresspic.jpg">-->
+    <!-- TWITTER -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@directofficial" />
+    <meta name="twitter:title" content="wav2png - audio to image converter" />
+    <meta name="twitter:description" content="convert audio to images for datamoshing audio fun." />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@200;300;400;500&display=swap');
 
@@ -38,16 +50,12 @@
             color: var(--color);
             text-decoration: none;
             border-bottom: 0.1em solid var(--color);
-            cursor: pointer;
-
         }
 
         a:hover {
             color: var(--color);
             text-decoration: none;
             border-bottom: 0.1em solid var(--color);
-            cursor: pointer;
-
         }
 
         button {
@@ -116,14 +124,14 @@
         }
 
         #imageContainer #canvasDiv #bgText:after {
-            content: "Drag .wav here to convert to .png";
+            content: "Drag .wav here";
             position: absolute;
-            width: calc(100% - 3em);
-            height: calc(17em - 3em);
-            border: var(--color) dashed 0.5em;
+            font-size: 1.4em;
+            width: calc(100% - 3rem);
+            height: calc(17rem - 3rem);
+            border: var(--color) dashed 0.5rem;
             text-align: center;
-            padding: 13em 1em 1em 1em;
-            vertical-align: middle;
+            padding: 13rem 1rem 1rem 1rem;
         }
 
         #imageContainer #titleText {
@@ -135,9 +143,8 @@
         #imageContainer canvas {
             height: 30em;
             width: 100%;
-            z-index: 10;
+            z-index: 1;
             position: relative;
-
         }
 
         #imageContainer #buttons {
@@ -161,17 +168,15 @@
         }
 
         #audioContainer #canvasDiv #bgText:after {
-            content: "Drag .png here to convert to .wav";
+            content: "Drag .png here";
             position: absolute;
-            width: calc(100% - 3em);
-            height: calc(17em - 3em);
-            border: var(--color) dashed 0.5em;
+            font-size: 1.4em;
+            width: calc(100% - 3rem);
+            height: calc(17rem - 3rem);
+            border: var(--color) dashed 0.5rem;
             text-align: center;
-            padding: 13em 1em 1em 1em;
-            vertical-align: middle;
+            padding: 13rem 1rem 1rem 1rem;
         }
-
-
 
         #audioContainer #titleText {
             color: var(--color);
@@ -182,7 +187,7 @@
         #audioContainer canvas {
             height: 30em;
             width: 100%;
-            z-index: 10;
+            z-index: 1;
             position: relative;
         }
 
@@ -203,16 +208,18 @@
             opacity: 0;
             transition: 0.5s opacity;
             pointer-events: none;
-            backdrop-filter: blur(10px);
+            /* backdrop-filter: blur(10px); */
 
+            z-index: 100;
             /* display: none; */
         }
+
         #notchrome {
             background: var(--accent-transparent);
             position: fixed;
             text-align: center;
             font-size: 3em;
-            padding-top: 50vh;
+            padding-top: 10vh;
             top: 0;
             left: 0;
             width: 100vw;
@@ -224,7 +231,7 @@
 
         #faq {
             max-width: 50em;
-            padding: 2em;
+            padding: 1em 2em 1em 2em;
         }
 
         h2 {
@@ -238,14 +245,14 @@
 
         #changelog {
             max-width: 50em;
-            padding: 2em;
+            padding: 1em 2em 1em 2em;
             opacity: 0.75;
         }
 
         .tooltip {
             position: relative;
             display: inline-block;
-            
+
         }
 
         .tooltip .tooltiptext {
@@ -264,6 +271,13 @@
         .tooltip:hover .tooltiptext {
             visibility: visible;
         }
+
+        #options {
+            background-color: var(--bg-accent);
+            padding: 1em;
+            margin: 1rem 1rem 0 1rem;
+            font-size: 1em;
+        }
     </style>
 </head>
 
@@ -271,6 +285,15 @@
     <div id="title"><span>wav2png</span> <span id="subtext">&back</span> <span id="madewithlove">made with ❤️ by <a
                 href="https://twitter.com/directofficial">@directofficial</a> | <a href="https://ko-fi.com/directmusic">
                 buy me a coffee</a> | <a href="https://www.paypal.com/paypalme/directmusic"> donate on paypal</a></span>
+    </div>
+    <div id="options"><span>choose channel:
+            <div class="tooltip">ⓘ <span class="tooltiptext">Pick the channel which will be converted to PNG.</span>
+            </div>
+        </span>
+        <input type="radio" id="left" name="channel" value="0" checked>
+        <label for="left">left</label>
+        <input type="radio" id="right" name="channel" value="1">
+        <label for="right">right</label>
     </div>
     <canvas width="3000" height="500" id="imgRenderingCanvasLeft" hidden></canvas>
     <div id="mainContainer">
@@ -281,16 +304,19 @@
                     wav > png:
                     <div class="tooltip">ⓘ <span class="tooltiptext">Drag a .wav file here to convert it to a PNG.
                             <br><br>
-                            This takes the left channel, assigns color values based off each sample. Download the PNG
-                            file and open it in an image editor. Then drag it back to this page.</span>
+                            This takes the left channel of the .wav file and assigns color values based off each sample.
+                            <br><br>
+                            Download the PNG file and open it in an image editor. Then once you're finished editing it
+                            drag it back to this page!</span>
                     </div>
+                    <input type="file" id="wavFileInput">
                 </div>
                 <div id="canvasDiv">
                     <div id="bgText"></div>
                     <canvas width="3000" height="500" id="audioDisplay"></canvas>
                 </div>
                 <div id="buttons">
-                    <button onclick="downloadChannel('left', 'left', leftChannelCanvas)">Download .png file</button>
+                    <button onclick="downloadChannel('left', 'channel', leftChannelCanvas)">Download .png file</button>
                 </div>
             </div>
 
@@ -300,11 +326,14 @@
             <div id="audioDropHandler">
                 <div id="titleText">
                     png > wav:
-                    <div class="tooltip">ⓘ <span class="tooltiptext">Drag a .png file here to convert it to a .wav audio
+                    <div class="tooltip">ⓘ <span class="tooltiptext">Drag a .png file here to convert it to a .wav
                             file. <br><br>
-                            This essentially converts the image back to audio. You can drag any image into here but it
-                            may sound like trash or be extremely loud so be careful and turn down your speakers.</span>
+                            This essentially converts the image back to audio. Process it how you please before dragging
+                            it into here.<br><br>
+                            You can drag any image into here but it may sound like trash or be extremely loud so be
+                            careful and turn down your speakers.</span>
                     </div>
+                    <input type="file" id="pngFileInput">
                 </div>
                 <div id="canvasDiv">
                     <div id="bgText"></div>
@@ -320,8 +349,9 @@
         Loading...
     </div>
     <div id="notchrome">
-        wav2png only works in Chromium-based browsers.<br>
-        <span style="font-size: 0.5em">if you think you're experiencing a glitch let me know on twitter @directofficial</span>
+        wav2png does not support your browser.<br>
+        <span style="font-size: 0.5em">if you think you're experiencing a glitch let me know on twitter
+            @directofficial</span>
     </div>
     <div id="faq">
         <h2>what is this?</h2>
@@ -330,7 +360,7 @@
         <h2>what image filters work best?</h2>
         <p>i love playing with photoshop's blur filters like field blur and radial blur!</p>
         <h2>you're going to steal my song huh?</h2>
-        <p>no way. i can't afford the bandwidth to do the conversion on a server so the whole conversion process is don
+        <p>no way. i can't afford the bandwidth to do the conversion on a server so the whole conversion process is done
             within your browser. don't believe me? download the page and use it with your wifi off.</p>
         <h2>oh cool thanks</h2>
         <p>no problem. if you use this in a tune i'd love to know about it. hit me up on twitter <a
@@ -339,10 +369,18 @@
     </div>
     <div id="changelog">
         <h2>changelog</h2>
-        <p>initial release - 04/27/2021</p>
+        <p>05/13/2021 - added file form input to (kinda) support mobile users</p>
+        <p>04/30/2021 - jpg to wav conversion support</p>
+        <p>04/27/2021 - channel selector addition + firefox support (kinda)</p>
+        <p>04/27/2021 - initial release</p>
+    </div>
+    <div id="changelog">
+        <h2>open source components</h2>
+        <p>wave file header code from: <a href="https://github.com/mattdiamond/Recorderjs">Recorder.js</a></p>
+        <p><a href="recorderjslicense.txt">view license</a></p>
     </div>
     <script>
-        if(!window.chrome){
+        if (!window.chrome && !(navigator.userAgent.indexOf("Firefox") > 0)) {
             notchrome.style.display = "block";
         }
         audioContainer.ondragover = audioContainer.ondragenter = function (evt) {
@@ -362,25 +400,40 @@
             evt.preventDefault();
             imageContainer.style.backgroundColor = "var(--bg-accent)";
         }
-        // HANDLE FILE DROP
-        imgDropHandler.ondrop =
-            audioContainer.ondrop = function (evt) {
-                //restore colors
-                audioContainer.style.backgroundColor = "var(--bg-accent)";
-                imageContainer.style.backgroundColor = "var(--bg-accent)";
-                loading.style.opacity = "1";
-                evt.preventDefault();
+        // Handles the input file element
+        class hackedFileThing {
+            constructor() {
+                this.dataTransfer;
+            }
+            preventDefault() {
+                    console.log("File chosen; not dropped. No need to prevent default");
+                };
+        }
+        function handleFiles() {
+            var fileList = new hackedFileThing;
+            fileList.dataTransfer = this;
+            console.log(fileList.dataTransfer);
+            fileInput(fileList);
+        }
 
-                // pretty simple -- but not for IE :(
-                let file = evt.dataTransfer.files[0];
-                let reader = new FileReader();
-                if (file.type.match('image/png')) {
+        // Handles the drop zone
+        imgDropHandler.ondrop = audioContainer.ondrop = fileInput = function (evt) {
+            //restore colors
+            audioContainer.style.backgroundColor = "var(--bg-accent)";
+            imageContainer.style.backgroundColor = "var(--bg-accent)";
+            loading.style.opacity = "1";
+            evt.preventDefault();
+
+            let file = evt.dataTransfer.files[0];
+            let reader = new FileReader();
+            if (evt.dataTransfer.files.length > 0) {
+                if (file.name.toLowerCase().includes(".png") || file.name.toLowerCase().includes(".jpg") || file.name.toLowerCase().includes(".jpeg")) {
                     reader.readAsDataURL(file);
                     reader.onload = function (e2) {
                         // Start PNG Process
                         img2audio(e2.target.result);
                     }
-                } else if (file.type.match('audio/wav')) {
+                } else if (file.name.includes(".wav")) {
                     reader.readAsArrayBuffer(file);
                     reader.onload = function (e2) {
                         // Start WAV Process
@@ -388,9 +441,21 @@
                     }
                 } else {
                     console.error("FILE FORMAT INVALID");
+                    loading.style.opacity = "0";
                 }
+            } else {
+                console.error("no files were dragged in. did you try to drag a link in?");
+                loading.style.opacity = "0";
+            }
 
-            };
+        };
+
+        const wavInput = document.getElementById("wavFileInput");
+        wavInput.addEventListener("change", handleFiles, false);
+
+        const pngInput = document.getElementById("pngFileInput");
+        pngInput.addEventListener("change", handleFiles, false);
+
         function clamp(num, min, max) {
             return num <= min ? min : num >= max ? max : num;
         }
@@ -413,12 +478,26 @@
                 // success
                 buffer = data;
                 let leftChannelPixels = new Array();
-                let bufL = buffer.getChannelData(0);
+                var channelSelector = document.getElementsByName('channel');
+                let selectedChannel = 0;
+                for (i = 0; i < channelSelector.length; i++) {
+                    if (channelSelector[i].checked) {
+                        selectedChannel = i;
+                    }
+                }
+                console.log(selectedChannel);
+                console.log("Number Of Channels: " + buffer.numberOfChannels);
+                if (selectedChannel > buffer.numberOfChannels - 1) {
+                    selectedChannel = 0;
+                    console.error("this audio file does not have a right channel. defaulting to left");
+                }
+                let bufL = buffer.getChannelData(selectedChannel);
                 // let buf = (buffer.getChannelData(0) + buffer.getChannelData(1))/ 2; 
                 for (let i = 0; i < buffer.length; i++) {
                     leftChannelPixels.push(((clamp(bufL[i], -1, 1) + 1) * 0.5) * 768); // 
                     leftChannelAudio.push(bufL[i]);
                 }
+                // console.log(stride.value);
                 buildImage(leftChannelPixels, 3000, ctx);
                 buildImage(leftChannelPixels, 3000, leftCtx);
                 loading.style.opacity = "0";
