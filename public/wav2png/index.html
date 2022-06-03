@@ -44,6 +44,7 @@
             background-color: var(--bg);
             color: var(--text);
             font-family: 'Source Code Pro', monospace;
+            overflow-x: hidden;
         }
 
         a {
@@ -65,6 +66,7 @@
             background: var(--accent-transparent);
             border: none;
             padding: 1em;
+            margin-top: 0.5em;
         }
 
         button:hover {
@@ -75,39 +77,67 @@
             background: var(--btn-active);
         }
 
-        #title {
-            background-color: var(--bg-accent);
-            padding: 1em;
-            margin: 1rem 1rem 0 1rem;
-            font-size: 1.5em;
+        @media only screen and (min-width: 600px) {
+            .grid_container {
+                display: grid;
+                padding: 1em;
+                grid-gap: 1em;
+
+                width: calc(100vw - 3em);
+                grid-template-columns: 50% 50%;
+                grid-template-areas:
+                    "image audio";
+            }
         }
 
-        #title #subtext {
-            font-size: 0.75em;
-            opacity: 0.5;
+        @media only screen and (max-width: 600px) {
+            .grid_container {
+                display: grid;
+                padding: 1em;
+                grid-gap: 1em;
+
+                width: calc(100vw - 2em);
+                grid-template-columns: 100%;
+                grid-template-areas:
+                    "image"
+                    "audio";
+            }
         }
 
-        #title #madewithlove {
-            font-size: 0.75em;
-            opacity: 0.9;
-            text-align: right;
-            display: inline;
-            background: var(--accent-transparent);
-            padding: 1em;
-            ;
+        /* png2wav wav2png text */
+        .title_text {
+            color: var(--color);
+            margin-bottom: 0.5em;
+            font-size: 1.25em;
         }
 
-        #mainContainer {
-            display: grid;
-            padding: 1em;
-            grid-gap: 1em;
 
-            width: calc(100vw - 3em);
-            grid-template-columns: 50% 50%;
-            grid-template-areas:
-                "image audio";
+        .canvas_container {
+            display: inline-block;
         }
 
+        .canvas_container .bg_text {
+            position: relative;
+        }
+
+        .canvas_container .bg_text:after {
+            position: absolute;
+            font-size: 1.4em;
+            width: calc(100% - 3rem);
+            height: calc(17rem - 3rem);
+            border: var(--color) dashed 0.5rem;
+            text-align: center;
+            padding: 13rem 1rem 1rem 1rem;
+        }
+
+        .canvas_container canvas {
+            height: 30em;
+            width: 100%;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* png2wav */
         #imageContainer {
             grid-area: "image";
             padding: 1em;
@@ -115,43 +145,12 @@
             transition: 0.5s background-color;
         }
 
-        #imageContainer #bgText {
-            position: relative;
-        }
-
-        #imageContainer #canvasDiv {
-            display: inline-block;
-        }
-
-        #imageContainer #canvasDiv #bgText:after {
+        #imageContainer .bg_text:after {
             content: "Drag .wav here";
-            position: absolute;
-            font-size: 1.4em;
-            width: calc(100% - 3rem);
-            height: calc(17rem - 3rem);
-            border: var(--color) dashed 0.5rem;
-            text-align: center;
-            padding: 13rem 1rem 1rem 1rem;
+
         }
 
-        #imageContainer #titleText {
-            color: var(--color);
-            margin-bottom: 0.5em;
-            font-size: 1.25em;
-        }
-
-        #imageContainer canvas {
-            height: 30em;
-            width: 100%;
-            z-index: 1;
-            position: relative;
-        }
-
-        #imageContainer #buttons {
-            margin-top: 0.5em;
-            /* z-index:  1; */
-        }
-
+        /* wav2png */
         #audioContainer {
             grid-area: "audio";
             padding: 1em;
@@ -159,40 +158,8 @@
             transition: 0.5s background-color;
         }
 
-        #audioContainer #bgText {
-            position: relative;
-        }
-
-        #audioContainer #canvasDiv {
-            display: inline-block;
-        }
-
-        #audioContainer #canvasDiv #bgText:after {
+        #audioContainer .bg_text:after {
             content: "Drag .png here";
-            position: absolute;
-            font-size: 1.4em;
-            width: calc(100% - 3rem);
-            height: calc(17rem - 3rem);
-            border: var(--color) dashed 0.5rem;
-            text-align: center;
-            padding: 13rem 1rem 1rem 1rem;
-        }
-
-        #audioContainer #titleText {
-            color: var(--color);
-            margin-bottom: 0.5em;
-            font-size: 1.25em;
-        }
-
-        #audioContainer canvas {
-            height: 30em;
-            width: 100%;
-            z-index: 1;
-            position: relative;
-        }
-
-        #audioContainer #buttons {
-            margin-top: 0.5em;
         }
 
         #loading {
@@ -208,10 +175,7 @@
             opacity: 0;
             transition: 0.5s opacity;
             pointer-events: none;
-            /* backdrop-filter: blur(10px); */
-
             z-index: 100;
-            /* display: none; */
         }
 
         #notchrome {
@@ -229,21 +193,22 @@
             -webkit-backdrop-filter: blur(20px);
         }
 
-        #faq {
+        .faq {
             max-width: 50em;
             padding: 1em 2em 1em 2em;
+            border-bottom: var(--accent-transparent) solid 1px;
+        }
+
+        .faq p {
+            text-indent: 1em;
+            margin-left: 1em;
         }
 
         h2 {
             padding: 1em 0 0.5em 0;
         }
 
-        #faq p {
-            text-indent: 1em;
-            margin-left: 1em;
-        }
-
-        #changelog {
+        .changelog {
             max-width: 50em;
             padding: 1em 2em 1em 2em;
             opacity: 0.75;
@@ -272,35 +237,85 @@
             visibility: visible;
         }
 
-        #options {
+        .block {
             background-color: var(--bg-accent);
             padding: 1em;
-            margin: 1rem 1rem 0 1rem;
-            font-size: 1em;
+            margin: 1rem 0 0 1rem;
+            float: left;
+        }
+
+        /* nothing can be to the right of this */
+        .hbox {
+            display: inline-block;
+            width: 100%;
+        }
+
+        /* TITLE */
+        #title {
+            word-wrap: break-word;
+        }
+
+        .subtext {
+            font-size: 0.75em;
+            opacity: 0.5;
+        }
+
+        #madewithlove {
+            opacity: 0.9;
+        }
+
+        #madewithlove li::after {
+            content: " | ";
+        }
+
+        #madewithlove li:last-child:after {
+            content: "";
+        }
+
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            display: inline-block;
         }
     </style>
 </head>
 
 <body>
-    <div id="title"><span>wav2png</span> <span id="subtext">&back</span> <span id="madewithlove">made with ❤️ by <a
-                href="https://twitter.com/directofficial">@directofficial</a> | <a href="https://ko-fi.com/directmusic">
-                buy me a coffee</a> | <a href="https://www.paypal.com/paypalme/directmusic"> donate on paypal</a></span>
+    <div class="hbox">
+        <div class="block">
+            <span id="title">wav2png</span> <span class="subtext">&back</span>
+        </div>
+        <div class="block">
+            <ul id="madewithlove">
+                <li>made with ❤️ by</li>
+                <li><a href="https://twitter.com/directofficial" target="_blank">@directofficial</a></li>
+                <li><a href="https://minimeters.app" target="_blank"> get minimeters</a></li>
+                <li><a href="https://www.paypal.com/paypalme/directmusic" target="_blank"> donate on paypal</a></li>
+            </ul>
+        </div>
     </div>
-    <div id="options"><span>choose channel:
-            <div class="tooltip">ⓘ <span class="tooltiptext">Pick the channel which will be converted to PNG.</span>
-            </div>
-        </span>
-        <input type="radio" id="left" name="channel" value="0" checked>
-        <label for="left">left</label>
-        <input type="radio" id="right" name="channel" value="1">
-        <label for="right">right</label>
+    <div class="hbox">
+        <div class="block">
+            <span>choose channel:
+                <div class="tooltip">ⓘ <span class="tooltiptext">Pick the channel which will be converted to PNG.</span>
+                </div>
+            </span>
+            <input type="radio" id="left" name="channel" value="0" checked>
+            <label for="left">left</label>
+            <input type="radio" id="right" name="channel" value="1">
+            <label for="right">right</label>
+        </div>
     </div>
+
     <canvas width="3000" height="500" id="imgRenderingCanvasLeft" hidden></canvas>
-    <div id="mainContainer">
+    <div class="grid_container">
         <div id="imageContainer">
             <div id="imgDropHandler">
-
-                <div id="titleText">
+                <div class="title_text">
                     wav > png:
                     <div class="tooltip">ⓘ <span class="tooltiptext">Drag a .wav file here to convert it to a PNG.
                             <br><br>
@@ -311,20 +326,18 @@
                     </div>
                     <input type="file" id="wavFileInput">
                 </div>
-                <div id="canvasDiv">
-                    <div id="bgText"></div>
+                <div class="canvas_container">
+                    <div class="bg_text"></div>
                     <canvas width="3000" height="500" id="audioDisplay"></canvas>
                 </div>
-                <div id="buttons">
-                    <button onclick="downloadChannel('left', 'channel', leftChannelCanvas)">Download .png file</button>
-                </div>
+                <button onclick="downloadChannel('left', 'channel', leftChannelCanvas)">Download .png file</button>
             </div>
 
         </div>
 
         <div id="audioContainer">
             <div id="audioDropHandler">
-                <div id="titleText">
+                <div class="title_text">
                     png > wav:
                     <div class="tooltip">ⓘ <span class="tooltiptext">Drag a .png file here to convert it to a .wav
                             file. <br><br>
@@ -335,50 +348,54 @@
                     </div>
                     <input type="file" id="pngFileInput">
                 </div>
-                <div id="canvasDiv">
-                    <div id="bgText"></div>
+                <div class="canvas_container">
+                    <div class="bg_text"></div>
                     <canvas width="3000" height="500" id="pngDisplay"></canvas>
                 </div>
-                <div id="buttons">
-                    <button onclick="downloadAudio();">Download .wav file</button>
-                </div>
+                <button onclick="downloadAudio();">Download .wav file</button>
             </div>
         </div>
     </div>
+
     <div id="loading">
         Loading...
     </div>
+    <!-- Displays if the user is using Safari :( -->
     <div id="notchrome">
         wav2png does not support your browser.<br>
         <span style="font-size: 0.5em">if you think you're experiencing a glitch let me know on twitter
             @directofficial</span>
     </div>
-    <div id="faq">
-        <h2>what is this?</h2>
-        <p>wav2png is a way to convert audio files to png to allow for the use of various photo filters on audio. this
-            page also allows you to convert back to audio for use in your songs and projects.</p>
-        <h2>what image filters work best?</h2>
-        <p>i love playing with photoshop's blur filters like field blur and radial blur!</p>
-        <h2>you're going to steal my song huh?</h2>
-        <p>no way. i can't afford the bandwidth to do the conversion on a server so the whole conversion process is done
-            within your browser. don't believe me? download the page and use it with your wifi off.</p>
-        <h2>oh cool thanks</h2>
-        <p>no problem. if you use this in a tune i'd love to know about it. hit me up on twitter <a
-                href="https://twitter.com/directofficial">(@directofficial)</a>. or if you feel generous buy me a coffee
-            or donate on paypal :)</p>
+
+    <div class="hbox">
+        <div class="faq">
+            <h2>what is this?</h2>
+            <p>wav2png is a way to convert audio files to png to allow for the use of various photo filters on audio.
+                this
+                page also allows you to convert back to audio for use in your songs and projects.</p>
+            <h2>what image filters work best?</h2>
+            <p>i love playing with photoshop's blur filters like field blur and radial blur!</p>
+            <h2>you're going to steal my song huh?</h2>
+            <p>no way. the conversion is performed in your browser. the site is completely static. you can download it
+                and use it offline.</p>
+            <h2>oh cool thanks</h2>
+            <p>no problem. if you use this in a tune i'd love to know about it. hit me up on twitter <a
+                    href="https://twitter.com/directofficial">(@directofficial)</a>. or if you feel generous donate on
+                paypal :)</p>
+        </div>
+        <div class="changelog">
+            <h2>changelog</h2>
+            <p>06/03/2022 - better mobile layout, cleaned up some code, rewrote wav file handler.</p>
+            <p>05/13/2021 - added file form input to (kinda) support mobile users</p>
+            <p>04/30/2021 - jpg to wav conversion support</p>
+            <p>04/27/2021 - channel selector addition + firefox support (kinda)</p>
+            <p>04/27/2021 - initial release</p>
+        </div>
+        <footer class="changelog">
+            made by joseph lyncheski.
+        </footer>
     </div>
-    <div id="changelog">
-        <h2>changelog</h2>
-        <p>05/13/2021 - added file form input to (kinda) support mobile users</p>
-        <p>04/30/2021 - jpg to wav conversion support</p>
-        <p>04/27/2021 - channel selector addition + firefox support (kinda)</p>
-        <p>04/27/2021 - initial release</p>
-    </div>
-    <div id="changelog">
-        <h2>open source components</h2>
-        <p>wave file header code from: <a href="https://github.com/mattdiamond/Recorderjs">Recorder.js</a></p>
-        <p><a href="recorderjslicense.txt">view license</a></p>
-    </div>
+
     <script>
         if (!window.chrome && !(navigator.userAgent.indexOf("Firefox") > 0)) {
             notchrome.style.display = "block";
@@ -406,8 +423,8 @@
                 this.dataTransfer;
             }
             preventDefault() {
-                    console.log("File chosen; not dropped. No need to prevent default");
-                };
+                console.log("File chosen; not dropped. No need to prevent default");
+            };
         }
         function handleFiles() {
             var fileList = new hackedFileThing;
@@ -535,54 +552,57 @@
             }, "image/png");
         }
 
-        var rate = 44100;
-        function floatTo16BitPCM(output, offset, input) {
-            for (let i = 0; i < input.length; i++, offset += 2) {
-                let s = Math.max(-1, Math.min(1, input[i]));
-                output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-            }
+        const SAMPLE_RATE = 44100;
+        const BITRATE = 16;
+        const N_CHANNELS = 1;
+        const WAV_HEADER_SIZE = 44; // 44 bytes
+
+        function build_wav_header(buf, audio_length) {
+            // RIFF
+
+            return buf;
         }
 
-        function writeString(view, offset, string) {
-            for (let i = 0; i < string.length; i++) {
-                view.setUint8(offset + i, string.charCodeAt(i));
+        function write_wav_file(samples) {
+            let buffer = new ArrayBuffer(WAV_HEADER_SIZE + samples.length * 2);
+            let data = new DataView(buffer);
+
+            data.setUint8(0, 'R'.charCodeAt(0));
+            data.setUint8(1, 'I'.charCodeAt(0));
+            data.setUint8(2, 'F'.charCodeAt(0));
+            data.setUint8(3, 'F'.charCodeAt(0));
+            data.setUint32(4, 36 + samples.length * N_CHANNELS, true);
+            // WAV
+            data.setUint8(8, 'W'.charCodeAt(0));
+            data.setUint8(9, 'A'.charCodeAt(0));
+            data.setUint8(10, 'V'.charCodeAt(0));
+            data.setUint8(11, 'E'.charCodeAt(0));
+            // fmt
+            data.setUint8(12, 'f'.charCodeAt(0));
+            data.setUint8(13, 'm'.charCodeAt(0));
+            data.setUint8(14, 't'.charCodeAt(0));
+            data.setUint8(15, ' '.charCodeAt(0));
+            data.setUint32(16, 16, true);
+            data.setUint16(20, 1, true); // Audio format 1 = PCM
+            data.setUint16(22, N_CHANNELS, true);
+            data.setUint32(24, SAMPLE_RATE, true);
+            data.setUint32(28, SAMPLE_RATE * N_CHANNELS * BITRATE / 8, true);
+            data.setUint16(32, N_CHANNELS * BITRATE / 8, true);
+            data.setUint16(34, BITRATE, true);
+            data.setUint8(36, 'd'.charCodeAt(0));
+            data.setUint8(37, 'a'.charCodeAt(0));
+            data.setUint8(38, 't'.charCodeAt(0));
+            data.setUint8(39, 'a'.charCodeAt(0));
+            data.setUint32(40, samples.length * 2 * N_CHANNELS, true);
+
+            console.log("samples length: ", samples.length);
+
+            for (let i = 0; i < samples.length; i++) {
+                let sample = samples[i];
+
+                data.setInt16(WAV_HEADER_SIZE + i * 2, sample < 0 ? sample * 0x8000 : sample * 0x7FFF, true);
             }
-        }
-        function encodeWAV(samples) {
-            let buffer = new ArrayBuffer(44 + samples.length * 2);
-            let view = new DataView(buffer);
-            let numChannels = 1;
-            let sampleRate = 44100;
-            /* RIFF identifier */
-            writeString(view, 0, 'RIFF');
-            /* RIFF chunk length */
-            view.setUint32(4, 36 + samples.length * 2, true);
-            /* RIFF type */
-            writeString(view, 8, 'WAVE');
-            /* format chunk identifier */
-            writeString(view, 12, 'fmt ');
-            /* format chunk length */
-            view.setUint32(16, 16, true);
-            /* sample format (raw) */
-            view.setUint16(20, 1, true);
-            /* channel count */
-            view.setUint16(22, numChannels, true);
-            /* sample rate */
-            view.setUint32(24, sampleRate, true);
-            /* byte rate (sample rate * block align) */
-            view.setUint32(28, sampleRate * 4, true);
-            /* block align (channel count * bytes per sample) */
-            view.setUint16(32, numChannels * 2, true);
-            /* bits per sample */
-            view.setUint16(34, 16, true);
-            /* data chunk identifier */
-            writeString(view, 36, 'data');
-            /* data chunk length */
-            view.setUint32(40, samples.length * 2, true);
-
-            floatTo16BitPCM(view, 44, samples);
-
-            return view;
+            return data;
         }
 
         // AUDIO
@@ -596,7 +616,7 @@
 
             var interleaved = newbuffers[0];
 
-            var dataview = encodeWAV(floatAudioBuffer, rate);
+            var dataview = write_wav_file(floatAudioBuffer);
             var audioBlob = new Blob([dataview], { type: type });
             currentAudioBlob = audioBlob;
             this.postMessage(audioBlob);
