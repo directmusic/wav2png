@@ -6,8 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>wav2png - audio to image converter</title>
-    <meta name="keywords"
-        content="wav2png, audio2image, audio, image, converter, photoshop filters, datamoshing, joseph lyncheski, directmusic">
+    <meta name="keywords" content="wav2png, audio2image, audio, image, converter, photoshop filters, datamoshing, joseph lyncheski, directmusic">
     <!-- FACEBOOK -->
     <meta property="og:title" content="wav2png - audio to image converter">
     <meta property="og:site_name" content="wav2png - audio to image converter">
@@ -379,19 +378,18 @@
             <p>no way. the conversion is performed in your browser. the site is completely static. you can download it
                 and use it offline.</p>
             <h2>oh cool thanks</h2>
-            <p>no problem. if you use this in a tune i'd love to know about it. hit me up on twitter <a
-                    href="https://twitter.com/directofficial">(@directofficial)</a>. or if you feel generous donate on
+            <p>no problem. if you use this in a tune i'd love to know about it. hit me up on twitter <a href="https://twitter.com/directofficial">(@directofficial)</a>. or if you feel generous donate on
                 paypal :)</p>
             <h2>i have an idea!</h2>
-            <p>sweet. wav2png is open source and available on <a
-                    href="https://github.com/directmusic/wav2png">GitHub</a>. feel free to open an issue! or if you want
+            <p>sweet. wav2png is open source and available on <a href="https://github.com/directmusic/wav2png">GitHub</a>. feel free to open an issue! or if you want
                 to code
                 it yourself i welcome pull requests.</p>
         </div>
         <div class="changelog">
             <h2>changelog</h2>
+            <p>06/05/2022 - Fix regression: Audio speed is correct on systems running at sample rates other than 44.1khz.</p>
             <p>06/03/2022 - better mobile layout, cleaned up some code, rewrote wav file handler, first public version
-                availble on <a href="https://github.com/directmusic/wav2png">GitHub</a></a>.</p>
+                availble on <a href="https://github.com/directmusic/wav2png">GitHub</a>.</p>
             <p>05/13/2021 - added file form input to (kinda) support mobile users</p>
             <p>04/30/2021 - jpg to wav conversion support</p>
             <p>04/27/2021 - channel selector addition + firefox support (kinda)</p>
@@ -492,7 +490,10 @@
         var pngCanvas = document.getElementById("pngDisplay");
         var pngContext = pngCanvas.getContext("2d");
 
-        const audioCtx = new AudioContext();
+        const audioCtx = new AudioContext({
+            sampleRate: 44100,
+        });
+
         let buffer = null;
         let leftChannelAudio = new Array();
 
